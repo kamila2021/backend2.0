@@ -1,0 +1,1323 @@
+{
+    "pipes": [],
+    "interfaces": [],
+    "injectables": [
+        {
+            "name": "AuthService",
+            "id": "injectable-AuthService-29496b1f11c68d3d06229632484e3e71ea7229388f9a4de0b9c41959ecfd108f75c55585b7313775118783fee8bcd2f2022bdf01629c18c41861677f21deb172",
+            "file": "src/app/auth/service/auth.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "signIn",
+                    "args": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<literal type>",
+                    "typeParameters": [],
+                    "line": 13,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "validateJwt",
+                    "args": [
+                        {
+                            "name": "jwt",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User | undefined>",
+                    "typeParameters": [],
+                    "line": 25,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "jwt",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable, UnauthorizedException } from '@nestjs/common';\nimport { JwtService } from '@nestjs/jwt';\nimport { User } from 'src/app/user/model/entity/user.entity';\nimport { UserService } from 'src/app/user/service/user.service';\n\n@Injectable()\nexport class AuthService {\n  constructor(\n    private readonly userService: UserService, // Agrega UserRepository como dependencia\n    private readonly jwtService: JwtService,\n  ) {}\n\n  async signIn(email: string, password: string): Promise<{ access_token: string }> {\n    const user = await this.userService.validate(email, password);\n    if (!user) {\n      throw new UnauthorizedException('Invalid credentials');\n    }\n\n    const payload = { sub: user.id, email: user.email };\n    return {\n      access_token: await this.jwtService.signAsync(payload),\n    };\n  }\n\n  async validateJwt(jwt: string): Promise<User | undefined> {\n    const decoded = this.jwtService.decode(jwt);\n    return await this.userService.findUserByIdAndEmail(decoded.sub);\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "userService",
+                        "type": "UserService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "jwtService",
+                        "type": "JwtService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 7,
+                "jsdoctags": [
+                    {
+                        "name": "userService",
+                        "type": "UserService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "jwtService",
+                        "type": "JwtService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "type": "injectable"
+        },
+        {
+            "name": "UserRepository",
+            "id": "injectable-UserRepository-91900c43b021135dd5862d7e4b67f148366be1c07f6e987b15a74a966792a030d45dbd8492015e92a1b036cf0ca0849d157c0d949e9692f410ed9de9ca9ad3ac",
+            "file": "src/app/user/model/repository/user.repository.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "createUser",
+                    "args": [
+                        {
+                            "name": "user",
+                            "type": "User",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 29,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "user",
+                            "type": "User",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "findAllUsers",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Promise<User[]>",
+                    "typeParameters": [],
+                    "line": 7,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ]
+                },
+                {
+                    "name": "findUserById",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 15,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "removeUser",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<void>",
+                    "typeParameters": [],
+                    "line": 50,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "updateUser",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "updatedUser",
+                            "type": "Partial<User>",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 38,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "updatedUser",
+                            "type": "Partial<User>",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@nestjs/common';\n\nimport { Repository } from 'typeorm';\nimport { User } from '../entity/user.entity';\n@Injectable()\nexport class UserRepository extends Repository<User> {\n  async findAllUsers(): Promise<User[]> {\n    try {\n      return await this.find();\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async findUserById(id: number): Promise<User> {\n    try {\n      const user = await this.findBy({\n        id: id,\n      });\n      if (user !== null) {\n        throw new Error('Usuario no encontrado');\n      }\n      return await user;\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async createUser(user: User): Promise<User> {\n    try {\n      return await this.create(user);\n    } catch (error) {\n      console.error(error);\n      return error;\n    }\n  }\n\n  async updateUser(id: number, updatedUser: Partial<User>): Promise<User> {\n    try {\n      const user = await this.findUserById(id);\n      if (user == null) {\n        throw new Error('Usuario no existe!!');\n      }\n      return await this.save(updatedUser);\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async removeUser(id: number): Promise<void> {\n    try {\n      const user = await this.findUserById(id);\n      if (user == null) {\n        throw new Error('Usuario no existe!!');\n      }\n      await this.remove(user);\n    } catch (error) {\n      return error;\n    }\n  }\n}\n",
+            "extends": [
+                "Repository"
+            ],
+            "type": "injectable"
+        },
+        {
+            "name": "UserService",
+            "id": "injectable-UserService-fbd1f11d133e34170f06393b5d5f2d3575d2c6f1be00e7447d5811920e94be478d85fcce087a7bd1cfb8dd7427435976ace03e2d0c2398d645177a8fa3bd70da",
+            "file": "src/app/user/service/user.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "createUser",
+                    "args": [
+                        {
+                            "name": "createUserDto",
+                            "type": "CreateUserDTO",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 66,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "createUserDto",
+                            "type": "CreateUserDTO",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "deleteUser",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<void>",
+                    "typeParameters": [],
+                    "line": 85,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "findAllUsers",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Promise<User[]>",
+                    "typeParameters": [],
+                    "line": 14,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ]
+                },
+                {
+                    "name": "findUserByEmail",
+                    "args": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 36,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "findUserById",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 22,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "findUserByIdAndEmail",
+                    "args": [
+                        {
+                            "name": "userData",
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 50,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "userData",
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "updateUser",
+                    "args": [
+                        {
+                            "name": "updateUserDto",
+                            "type": "UpdateUserDTO",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 77,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "updateUserDto",
+                            "type": "UpdateUserDTO",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "validate",
+                    "args": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<User>",
+                    "typeParameters": [],
+                    "line": 93,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "email",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable, UnauthorizedException } from '@nestjs/common';\nimport { UserRepository } from '../model/repository/user.repository';\nimport { User } from '../model/entity/user.entity';\nimport { CreateUserDTO } from '../dto/CreateUserDTO';\nimport { UpdateUserDTO } from '../dto/UpdateUserDTO';\n\n\n@Injectable()\nexport class UserService {\n  constructor(\n    private readonly userRepository: UserRepository\n  ) {}\n\n  async findAllUsers(): Promise<User[]> {\n    try {\n      return await this.userRepository.find();\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async findUserById(id: number): Promise<User> {\n    try {\n      const user = await this.userRepository.findOneBy({\n        id: id,\n      });\n      if (!user) {\n        throw new Error('Usuario no encontrado');\n      }\n      return await user;\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async findUserByEmail(email: string): Promise<User> {\n    try {\n      const user = await this.userRepository.findOneBy({\n        email: email,\n      });\n      if (user == null) {\n        throw new Error('Usuario no encontrado');\n      }\n      return await user;\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async findUserByIdAndEmail(userData: any): Promise<User> {\n    const { id, email } = userData;\n    try {\n      const user = await this.userRepository.findOneBy({\n        id: id,\n        email: email,\n      });\n      if (user == null) {\n        throw new Error('Usuario no encontrado');\n      }\n      return await user;\n    } catch (error) {\n      return error;\n    }\n  }\n\n  async createUser(createUserDto: CreateUserDTO): Promise<User> {\n    const newUser = new User();\n    newUser.firstName = createUserDto.firstName;\n    newUser.lastName = createUserDto.lastName;\n    newUser.email = createUserDto.email;\n    newUser.birthday = createUserDto.birthday;\n    newUser.password = createUserDto.password;\n\n    return await this.userRepository.save(newUser);\n  }\n\n  async updateUser(updateUserDto: UpdateUserDTO): Promise<User> {\n    const user = await this.findUserById(updateUserDto.id!);\n    if (!user) {\n      throw new Error('Usuario no encontrado');\n    }\n    return await this.userRepository.save({ ...user, ...updateUserDto });\n  }\n\n  async deleteUser(id: number): Promise<void> {\n    const user = await this.findUserById(id);\n    if (!user) {\n      throw new Error('Usuario no encontrado');\n    }\n    await this.userRepository.remove(user);\n  }\n\n  async validate(email: string, password: string): Promise<User> {\n    const user = await this.findUserByEmail(email);\n\n    if (!user) {\n      throw new UnauthorizedException('Usuario no encontrado');\n    }\n\n    if (user.password !== password) {\n      throw new UnauthorizedException('Credenciales inválidas');\n    }\n\n    return user;\n  }\n}\n\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "userRepository",
+                        "type": "UserRepository",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 9,
+                "jsdoctags": [
+                    {
+                        "name": "userRepository",
+                        "type": "UserRepository",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "type": "injectable"
+        }
+    ],
+    "guards": [
+        {
+            "name": "AuthGuard",
+            "id": "injectable-AuthGuard-3601fb2bedc31060a5c072edc35030e35d17656c7ca2484cd2a7fd4cdfe37f2e07d823954f6c0795b538c8df74fd93fbbbd97dc0e2fba168c89e453065c70b10",
+            "file": "src/app/auth/guard/auth.guard.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "canActivate",
+                    "args": [
+                        {
+                            "name": "context",
+                            "type": "ExecutionContext",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Promise<boolean>",
+                    "typeParameters": [],
+                    "line": 9,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        134
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "context",
+                            "type": "ExecutionContext",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';\nimport { JwtService } from '@nestjs/jwt';\nimport { Observable } from 'rxjs';\n\n@Injectable()\nexport class AuthGuard implements CanActivate {\n  constructor(private readonly jwtService: JwtService) {}\n\n  async canActivate(context: ExecutionContext): Promise<boolean> {\n    const request = context.switchToHttp().getRequest();\n    const authHeader = request.headers.authorization;\n\n    if (!authHeader || !authHeader.startsWith('Bearer ')) {\n      throw new UnauthorizedException('Unauthorized');\n    }\n\n    const token = authHeader.split(' ')[1];\n\n    try {\n      await this.jwtService.verifyAsync(token);\n      return true; // Valid token, allow access\n    } catch (error) {\n      throw new UnauthorizedException('Invalid token');\n    }\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "jwtService",
+                        "type": "JwtService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 6,
+                "jsdoctags": [
+                    {
+                        "name": "jwtService",
+                        "type": "JwtService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "type": "guard"
+        }
+    ],
+    "interceptors": [],
+    "classes": [
+        {
+            "name": "CreateUserDTO",
+            "id": "class-CreateUserDTO-e12b14b143d6548ac36b83a97b49af2eb98d007399a813aeb93531281d1910799ff09452d8cab1f893b25618720bc4e1fdbd9fb15709db1e8eb6fdd530c7e385",
+            "file": "src/app/user/dto/CreateUserDTO.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "class",
+            "sourceCode": "import { IsDate, IsEmail, IsString } from 'class-validator';\n\nexport class CreateUserDTO {\n  @IsString()\n  readonly firstName: string;\n\n  @IsString()\n  readonly lastName: string;\n\n  @IsEmail()\n  readonly email: string;\n\n  @IsDate()\n  readonly birthday: Date;\n\n  @IsString()\n  readonly password: string;\n}\n",
+            "properties": [
+                {
+                    "name": "birthday",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Date",
+                    "optional": false,
+                    "description": "",
+                    "line": 16,
+                    "decorators": [
+                        {
+                            "name": "IsDate",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "email",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 13,
+                    "decorators": [
+                        {
+                            "name": "IsEmail",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "firstName",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 7,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "lastName",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 10,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "password",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 19,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                }
+            ],
+            "methods": [],
+            "indexSignatures": [],
+            "extends": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "hostBindings": [],
+            "hostListeners": []
+        },
+        {
+            "name": "LoginDto",
+            "id": "class-LoginDto-a804dffbc5a88e5c913e0beb52386c89a13eabf6da031d8b2c3220a73333430325e23f2169e6a42f44c0b43617101059c54ec3189cf59cc3f4055c4290324511",
+            "file": "src/app/auth/dto/login.dto.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "class",
+            "sourceCode": "export class LoginDto {\n  email: string;\n  password: string;\n}\n",
+            "properties": [
+                {
+                    "name": "email",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 2
+                },
+                {
+                    "name": "password",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 3
+                }
+            ],
+            "methods": [],
+            "indexSignatures": [],
+            "extends": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "hostBindings": [],
+            "hostListeners": []
+        },
+        {
+            "name": "UpdateUserDTO",
+            "id": "class-UpdateUserDTO-079026b4efdf58b991b3aa1e5930ae82494fa52da21d9e3d1272715a5f718043fc000ad7353b3902cde398f41b61c073e39c6f4d8c4a1bb410696cebf6172bf6",
+            "file": "src/app/user/dto/UpdateUserDTO.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "class",
+            "sourceCode": "import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator';\n\nexport class UpdateUserDTO {\n\n  @IsNumber()\n  readonly id: number;\n\n  @IsString()\n  readonly firstName: string;\n\n  @IsString()\n  readonly lastName: string;\n\n  @IsEmail()\n  readonly email: string;\n\n  @IsDate()\n  readonly birthday: Date;\n\n  @IsString()\n  readonly password: string;\n}\n",
+            "properties": [
+                {
+                    "name": "birthday",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Date",
+                    "optional": false,
+                    "description": "",
+                    "line": 20,
+                    "decorators": [
+                        {
+                            "name": "IsDate",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "email",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 17,
+                    "decorators": [
+                        {
+                            "name": "IsEmail",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "firstName",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 11,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "id",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "number",
+                    "optional": false,
+                    "description": "",
+                    "line": 8,
+                    "decorators": [
+                        {
+                            "name": "IsNumber",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "lastName",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 14,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                },
+                {
+                    "name": "password",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 23,
+                    "decorators": [
+                        {
+                            "name": "IsString",
+                            "stringifiedArguments": ""
+                        }
+                    ],
+                    "modifierKind": [
+                        170,
+                        148
+                    ]
+                }
+            ],
+            "methods": [],
+            "indexSignatures": [],
+            "extends": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "hostBindings": [],
+            "hostListeners": []
+        }
+    ],
+    "directives": [],
+    "components": [],
+    "modules": [
+        {
+            "name": "AppModule",
+            "id": "module-AppModule-2f6f95e4a49ca9e450577bcb9517a89d7fa3f4e208687b5165f3fc11081c8c7b801960d8557c82d07b6e2faae5c030ec2f30db85b1bc155bd6738ece7a5ad273",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app.module.ts",
+            "methods": [],
+            "sourceCode": "import { Module } from '@nestjs/common';\nimport { databaseConfig } from './config/database.config';\nimport { ApiController } from './api.controller';\nimport { TypeOrmModule } from '@nestjs/typeorm';\nimport { UserRepository } from './app/user/model/repository/user.repository'; // Importa UserRepository\n\nimport { AuthModule } from './app/auth/auth.module';\nimport { AuthController } from './app/auth/controller/auth.controller';\n\nimport { UserModule } from './app/user/user.module';\nimport { UserController } from './app/user/controller/user.controller';\n\nimport { AuthService } from './app/auth/service/auth.service';\nimport { UserService } from './app/user/service/user.service';\nimport { JwtService } from '@nestjs/jwt';\n\n@Module({\n  imports: [\n    TypeOrmModule.forRoot(databaseConfig),\n    TypeOrmModule.forFeature([UserRepository]), // Registra UserRepository aquí\n    AuthModule,\n    UserModule,\n  ],\n  controllers: [ApiController, AuthController, UserController],\n  providers: [AuthService, UserService, UserRepository, JwtService], // Asegúrate de incluir UserRepository aquí\n})\nexport class AppModule {}\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": [
+                        {
+                            "name": "AuthService"
+                        },
+                        {
+                            "name": "UserRepository"
+                        },
+                        {
+                            "name": "UserService"
+                        }
+                    ]
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "AuthModule"
+                        },
+                        {
+                            "name": "UserModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "AuthModule",
+            "id": "module-AuthModule-e2bdd1a22074bcd82e5f19dd8514e2382fc0f53614d63855371880895fe92a9e2736530d6716ff86e81286f4a1329e60c230c153ace953cf3447fb234916d552",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/auth/auth.module.ts",
+            "methods": [],
+            "sourceCode": "import { Module } from '@nestjs/common';\nimport { AuthService } from '../auth/service/auth.service';\nimport { UserModule } from '../user/user.module';\nimport { JwtModule, JwtService } from '@nestjs/jwt';\nimport { AuthController } from '../auth/controller/auth.controller';\nimport { jwtConstants } from '../../utils/constants';\n\n@Module({\n  imports: [\n    UserModule,\n    JwtModule.register({\n      secret: jwtConstants.secret,\n      signOptions: { expiresIn: '60s' },\n    }),\n  ],\n  providers: [\n    AuthService,\n    JwtService,\n    {\n      provide: 'JWT_SECRET',\n      useValue: jwtConstants.secret,\n    },\n  ],\n  controllers: [AuthController],\n  exports: [AuthService],\n})\nexport class AuthModule {}\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": [
+                        {
+                            "name": "AuthService"
+                        }
+                    ]
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "UserModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "AuthService"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "UserModule",
+            "id": "module-UserModule-2e436aeb5b651d9a29cb0de1288669cb43ec3ace800e69f666a2f661c1a163d2d3319c61f9036e5f4fe5d4acba1741c833776a462e32944501fff8c681132793",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/user/user.module.ts",
+            "methods": [],
+            "sourceCode": "import { Module } from '@nestjs/common';\nimport { UserRepository } from './model/repository/user.repository';\nimport { UserController } from './controller/user.controller';\nimport { UserService } from './service/user.service';\nimport { User } from './model/entity/user.entity';\nimport { TypeOrmModule } from '@nestjs/typeorm';\nimport { JwtService } from '@nestjs/jwt';\n\n@Module({\n  imports: [TypeOrmModule.forFeature([User, UserRepository])],\n  controllers: [UserController],\n  providers: [JwtService, UserService, UserRepository, User],\n  exports: [UserService, UserRepository],\n})\nexport class UserModule {}\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": [
+                        {
+                            "name": "UserRepository"
+                        },
+                        {
+                            "name": "UserService"
+                        }
+                    ]
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "UserRepository"
+                        },
+                        {
+                            "name": "UserService"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        }
+    ],
+    "miscellaneous": {
+        "variables": [
+            {
+                "name": "databaseConfig",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/config/database.config.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "TypeOrmModule",
+                "defaultValue": "{\n  type: 'mysql',\n  host: 'localhost',\n  port: 3306,\n  username: 'root',\n  password: '',\n  database: 'ms1',\n  entities: [User],\n  synchronize: true,\n}"
+            },
+            {
+                "name": "jwtConstants",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/utils/constants.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "object",
+                "defaultValue": "{\n  secret:\n    'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',\n}"
+            }
+        ],
+        "functions": [
+            {
+                "name": "bootstrap",
+                "file": "src/main.ts",
+                "ctype": "miscellaneous",
+                "subtype": "function",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "args": []
+            }
+        ],
+        "typealiases": [],
+        "enumerations": [],
+        "groupedVariables": {
+            "src/config/database.config.ts": [
+                {
+                    "name": "databaseConfig",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/config/database.config.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "TypeOrmModule",
+                    "defaultValue": "{\n  type: 'mysql',\n  host: 'localhost',\n  port: 3306,\n  username: 'root',\n  password: '',\n  database: 'ms1',\n  entities: [User],\n  synchronize: true,\n}"
+                }
+            ],
+            "src/utils/constants.ts": [
+                {
+                    "name": "jwtConstants",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/utils/constants.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "object",
+                    "defaultValue": "{\n  secret:\n    'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',\n}"
+                }
+            ]
+        },
+        "groupedFunctions": {
+            "src/main.ts": [
+                {
+                    "name": "bootstrap",
+                    "file": "src/main.ts",
+                    "ctype": "miscellaneous",
+                    "subtype": "function",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "args": []
+                }
+            ]
+        },
+        "groupedEnumerations": {},
+        "groupedTypeAliases": {}
+    },
+    "routes": [],
+    "coverage": {
+        "count": 0,
+        "status": "low",
+        "files": [
+            {
+                "filePath": "src/api.controller.ts",
+                "type": "controller",
+                "linktype": "controller",
+                "name": "ApiController",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/auth/controller/auth.controller.ts",
+                "type": "controller",
+                "linktype": "controller",
+                "name": "AuthController",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/auth/dto/login.dto.ts",
+                "type": "class",
+                "linktype": "classe",
+                "name": "LoginDto",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/auth/guard/auth.guard.ts",
+                "type": "guard",
+                "linktype": "guard",
+                "name": "AuthGuard",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/auth/service/auth.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "AuthService",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/controller/user.controller.ts",
+                "type": "controller",
+                "linktype": "controller",
+                "name": "UserController",
+                "coveragePercent": 0,
+                "coverageCount": "0/7",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/dto/CreateUserDTO.ts",
+                "type": "class",
+                "linktype": "classe",
+                "name": "CreateUserDTO",
+                "coveragePercent": 0,
+                "coverageCount": "0/6",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/dto/UpdateUserDTO.ts",
+                "type": "class",
+                "linktype": "classe",
+                "name": "UpdateUserDTO",
+                "coveragePercent": 0,
+                "coverageCount": "0/7",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/model/entity/user.entity.ts",
+                "type": "entity",
+                "linktype": "entity",
+                "name": "User",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/model/repository/user.repository.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "UserRepository",
+                "coveragePercent": 0,
+                "coverageCount": "0/6",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/user/service/user.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "UserService",
+                "coveragePercent": 0,
+                "coverageCount": "0/10",
+                "status": "low"
+            },
+            {
+                "filePath": "src/config/database.config.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "databaseConfig",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/main.ts",
+                "type": "function",
+                "linktype": "miscellaneous",
+                "linksubtype": "function",
+                "name": "bootstrap",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/utils/constants.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "jwtConstants",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            }
+        ]
+    }
+}
