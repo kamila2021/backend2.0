@@ -11,7 +11,10 @@ import { jwtConfig } from 'src/config/jwt.config';
 };*/
 
 @Module({
-  imports: [UserModule, JwtModule.registerAsync(jwtConfig),],
+  imports: [UserModule, JwtModule.registerAsync({useFactory: () => { 
+    console.log(process.env.JWT_SECRET)
+    return {global: true, secret: process.env.JWT_SECRET, secretOrPrivateKey: process.env.JWT_SECRET, signOptions: {expiresIn: '60s'}}
+  }}),],
   providers: [AuthService],
   controllers: [AuthController],
   exports: [AuthService],
