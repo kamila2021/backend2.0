@@ -21,7 +21,7 @@ export class AuthController {
   signIn(
     @Body() signInDto: LoginDTO
   ) {
-    return this._auth.signIn(signInDto.username, signInDto.password);
+    return this._auth.signIn(signInDto.email, signInDto.password);
   }
 
   @Get('profile')

@@ -15,8 +15,12 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
-    const payload = { sub: user.id, email: user.email };
+    //console.log({user})
+    const payload = { sub: user.id, email: user.email, role: user.isAdmin };
+    const jwt = require('jsonwebtoken')
+    const accessToken = jwt.sign(payload,process.env.JWT_SECRET)
+    console.log({accessToken})
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

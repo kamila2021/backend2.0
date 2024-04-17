@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../model/user.model';
 import { CreateUserDTO } from '../dto/CreateUserDTO';
 import { UpdateUserDTO } from '../dto/UpdateUserDTO';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import * as bcrypt from 'bcrypt';
+import { findByEmail } from '../utils/findByEmail';
 
 @Injectable()
 export class UserService {
@@ -45,6 +46,7 @@ export class UserService {
       }
       return await user;
     } catch (error) {
+      //console.log({error})
       return error;
     }
   }
@@ -66,12 +68,20 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDTO): Promise<User> {
+    const existingUser = await findByEmail( this.userRepository, createUserDto.email);
+    //console.log(existingUser);
+    if (existingUser) {
+      throw new BadRequestException('Email en uso. No se puede crear el usuario.');
+    }
     const newUser = new User();
+    const salt = await bcrypt.genSalt();
+    newUser.password = await bcrypt.hash(createUserDto.password,salt);
+
     newUser.firstName = createUserDto.firstName;
     newUser.lastName = createUserDto.lastName;
     newUser.email = createUserDto.email;
     newUser.birthday = createUserDto.birthday;
-    newUser.password = createUserDto.password;
+    newUser.isAdmin = createUserDto.isAdmin;
 
     return await this.userRepository.save(newUser);
   }
@@ -108,10 +118,10 @@ export class UserService {
       throw new UnauthorizedException('Usuario no encontrado');
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-
     return user;
   }
 }

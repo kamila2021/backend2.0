@@ -13,16 +13,19 @@ import { UserService } from '../service/user.service';
 import { UpdateUserDTO } from '../dto/UpdateUserDTO';
 import { CreateUserDTO } from '../dto/CreateUserDTO';
 import { AuthGuard } from 'src/app/auth/guard/auth.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  @UseGuards(AuthGuard) // Protect with JWT authentication
+  /*@Get()
+  @Roles('admin')
+  @UseGuards(AuthGuard, RolesGuard) // Protect with JWT authentication
   async findAll(): Promise<User[]> {
     return await this.userService.findAllUsers();
-  }
+  }*/
 
   @Get(':id')
   @UseGuards(AuthGuard)

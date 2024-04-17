@@ -13,8 +13,10 @@ export class CreateUserDTO {
   readonly email: string;
 
   // @IsDate()
-  readonly birthday: Date;
+  readonly birthday: Date;//fecha de nacimiento
 
   @IsString()
   readonly password: string;
+
+  readonly isAdmin: boolean; //verificar esto en controller o service
 }

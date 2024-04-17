@@ -14,13 +14,15 @@ import { UserService } from './app/user/service/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './app/user/model/user.model';
 import { Repository } from 'typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
     TypeOrmModule.forFeature([User, Repository]), // Registra UserRepository aquí
     AuthModule,
-    UserModule
+    UserModule,
+    ConfigModule.forRoot({isGlobal: true,})
     ],
   controllers: [ApiController, AuthController, UserController],
   providers: [AuthService, UserService, JwtService, User, Repository], // Asegúrate de incluir UserRepository aquí
