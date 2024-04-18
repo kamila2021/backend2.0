@@ -3,10 +3,11 @@ import { User } from '../app/user/model/user.model';
 export const databaseConfig: TypeOrmModule = {
   type: 'mysql',
   host: 'localhost',
-  port: 3307,
-  username: 'user_crud',
-  password: 'root',
-  database: 'msuser',
+  port: 3306,
+  username: 'root',
+  password: 'toor',
+  database: 'test',
   entities: [User],
   synchronize: true,
+  ssl: false,
 };
