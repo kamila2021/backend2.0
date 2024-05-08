@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { User } from '../model/user.model';
 import { UserService } from '../service/user.service';
@@ -15,6 +16,8 @@ import { CreateUserDTO } from '../dto/CreateUserDTO';
 import { AuthGuard } from 'src/app/auth/guard/auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guard/roles.guard';
+import { RequestResetPasswordDTO } from '../dto/RequestResetPasswordDTO';
+import { ResetPasswordDTO } from '../dto/ResetPasswordDTO';
 
 @Controller('user')
 export class UserController {
@@ -54,6 +57,16 @@ export class UserController {
   @UseGuards(AuthGuard) // Require authentication for deletion
   async remove(@Param('id') id: number): Promise<void> {
     return await this.userService.deleteUser(id);
+  }
+
+  @Patch(':request-reset-password')
+  requestResetPassword(@Body() requestResetPasswordDto: RequestResetPasswordDTO){
+    return this.userService.requestResetPassword(requestResetPasswordDto);
+  }
+
+  @Patch(':reset-password')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDTO){
+    return this.userService.resetPassword(resetPasswordDto);
   }
 
 

@@ -11,25 +11,20 @@ export class AuthService {
   ) {}
 
   async signIn(email: string, password: string): Promise<{ access_token: string }> {
-    const user = await this.userService.validate(email, password);
+    const user = await this.userService.validateCredentials(email, password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    //console.log({user})
     const payload = { sub: user.id, email: user.email, role: user.isAdmin };
-    /*const jwt = require('jsonwebtoken')
-    const accessToken = jwt.sign(payload,process.env.JWT_SECRET)
-    console.log({accessToken})
-    console.log('JWT_SECRET:', process.env.JWT_SECRET);*/
     const access_token = await this.jwtService.signAsync(payload)
-    console.log({access_token})
     return {
       access_token,
     };
   }
 
-  async validateJwt(jwt: string): Promise<User | undefined> {
+  async validateJwt(jwt: string): Promise<User | undefined> {//PROBAR ESTE PARA EL GET JWT
     const decoded = this.jwtService.decode(jwt);
     return await this.userService.findUserByIdAndEmail(decoded.sub);
   }
+
 }

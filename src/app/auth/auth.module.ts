@@ -3,6 +3,7 @@ import { AuthService } from '../auth/service/auth.service';
 import { UserModule } from '../user/user.module';
 import { AuthController } from '../auth/controller/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
 
 @Module({
   imports: [UserModule, JwtModule],

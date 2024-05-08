@@ -6,10 +6,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { findByEmail } from '../utils/findByEmail';
+import { RequestResetPasswordDTO } from '../dto/RequestResetPasswordDTO';
+import { JwtService } from '@nestjs/jwt';
+import { ResetPasswordDTO } from '../dto/ResetPasswordDTO';
+import { sendEmail } from '../utils/sendEmail';
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
   ) { }
@@ -111,7 +116,7 @@ export class UserService {
     await this.userRepository.delete(id);
   }
 
-  async validate(email: string, password: string): Promise<User> {
+  async validateCredentials(email: string, password: string): Promise<User> {
     const user = await this.findUserByEmail(email);
 
     if (!user) {
@@ -124,5 +129,52 @@ export class UserService {
     }
     return user;
   }
+
+  async requestResetPassword(requestResetPasswordDto: RequestResetPasswordDTO): Promise<void>{
+    const { email } = requestResetPasswordDto;
+    const user = await this.findUserByEmail(email);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    const code = Math.floor(Math.random() * 900000) + 100000;
+    console.log("el código desde eñ backendfun requestresetpassword es:",code)
+    const payload = { sub: user.id, email: user.email, code: code };
+    user.resetPasswordToken = await this.jwtService.signAsync(payload)
+    await this.userRepository.save(user);
+    await sendEmail(user.email, code);
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDTO): Promise<void> {
+    const { resetCode, newPassword, email } = resetPasswordDto;
+    //encontrar usuario por email
+    const user = await this.findUserByEmail(email);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    const decoded = this.jwtService.decode(user.resetPasswordToken);
+    //verificar que token decoded sea válido
+    if (!decoded) {
+      throw new Error('Token inválido');
+    }
+    //obtener código desde decoded y verificar que sea igual al resetCode ingresado
+    if(decoded.code != resetCode){
+      throw new Error('Token de restablecimiento inválido');
+    }
+    //generar la nueva contraseña
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordToken = '';
+    await this.userRepository.save(user);//como se logró cambiar, lanzar en front aviso de q se hizo bien
+  }
+
+  async tokenByEmail(requestResetPasswordDto: RequestResetPasswordDTO){
+    const { email } = requestResetPasswordDto;
+    const user = await this.findUserByEmail(email);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    return user.token
+  }
+
 }
 

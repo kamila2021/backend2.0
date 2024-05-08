@@ -11,6 +11,7 @@ export class User {
   @Matches(/^[A-Za-zÀ]+(?: [A-Za-zÀ]+)?$/)
   firstName: string;
 
+  
   @Column({ nullable: false })
   @Length(2, 20)
   @Matches(/^[A-Za-zÀ]+(?:[- ][A-Za-zÀ]+)(?:[- ][A-Za-zÀ]+)?$/)
@@ -31,4 +32,10 @@ export class User {
 
   @Column({ type: 'boolean', default: true, nullable: false })//false para inactivo (ya no pertenece a empresa)
   isActive: boolean;
+
+  @Column({ unique:true, nullable: true})
+  resetPasswordToken: string;
+
+  @Column({ unique:true, nullable: true})
+  token: string;
 }

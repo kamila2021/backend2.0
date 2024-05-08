@@ -32,6 +32,16 @@
 $ npm install
 ```
 
+## Configuration
+
+Crear archivo .env con variables de entorno determinadas en .env.template
+
+## Iniciar servicios docker
+
+```bash
+docker-compose up -d
+```
+
 ## Running the app
 
 ```bash

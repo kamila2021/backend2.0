@@ -4,13 +4,14 @@ import {
   Body,
   HttpStatus,
   HttpCode,
-  UseGuards,
   Get,
   Request,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Request as ExpressRequest } from 'express';
 import { LoginDTO } from '../dto/LoginDTO';
+import { RequestResetPasswordDTO } from '../../user/dto/RequestResetPasswordDTO';
 
 @Controller('auth')
 export class AuthController {
@@ -28,4 +29,5 @@ export class AuthController {
   getProfile(@Request() req: ExpressRequest) {
     return req.user;
   }
+
 }
