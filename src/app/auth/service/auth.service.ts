@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/app/user/model/user.model';
 import { UserService } from 'src/app/user/service/user.service';
+import { JwtDTO } from '../dto/JwtDTO';
 
 @Injectable()
 export class AuthService {
@@ -10,21 +11,30 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, password: string): Promise<{ access_token: string }> {
+  async signIn(email: string, password: string) {
     const user = await this.userService.validateCredentials(email, password);
+
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
-    const payload = { sub: user.id, email: user.email, role: user.isAdmin };
-    const access_token = await this.jwtService.signAsync(payload)
+
+    const payload = { sub: user.id, email: user.email };
     return {
-      access_token,
+      token: this.jwtService.sign(payload),
     };
   }
 
-  async validateJwt(jwt: string): Promise<User | undefined> {//PROBAR ESTE PARA EL GET JWT
-    const decoded = this.jwtService.decode(jwt);
-    return await this.userService.findUserByIdAndEmail(decoded.sub);
+  async validateJwt(
+    data: JwtDTO,
+  ): Promise<{ userId: number; isAdmin: boolean }> {
+    try {
+      const decoded = await this.jwtService.verifyAsync(data.jwt);
+      console.log(decoded.role);
+      return { userId: decoded.sub, isAdmin: decoded.role }; // retorna id y rol en caso de ser válido el token
+    } catch (error) {
+      console.log('hubo error');
+      console.log(data.jwt);
+      throw new UnauthorizedException('Invalid token'); // caso token no válido
+    }
   }
-
 }

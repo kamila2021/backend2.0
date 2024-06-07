@@ -33,7 +33,7 @@ export class User {
   @Column({ type: 'boolean', default: true, nullable: false })//false para inactivo (ya no pertenece a empresa)
   isActive: boolean;
 
-  @Column({ unique:true, nullable: true})
+  @Column({ nullable: true})
   resetPasswordToken: string;
 
   @Column({ unique:true, nullable: true})

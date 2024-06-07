@@ -46,8 +46,7 @@ export class UserController {
     return await this.userService.createUser(createUserDto);
   }
 
-  @Put('')
-  @UseGuards(AuthGuard) // Require authentication for updating
+  @Put('/editar')
   async update(@Body() updateUserDto: UpdateUserDTO
   ): Promise<User> {
     return await this.userService.updateUser(updateUserDto);
@@ -59,15 +58,18 @@ export class UserController {
     return await this.userService.deleteUser(id);
   }
 
-  @Patch(':request-reset-password')
-  requestResetPassword(@Body() requestResetPasswordDto: RequestResetPasswordDTO){
+  @Post(':request-reset-password')
+  requestResetPassword(
+    @Body() requestResetPasswordDto: RequestResetPasswordDTO,
+  ) {
     return this.userService.requestResetPassword(requestResetPasswordDto);
   }
 
-  @Patch(':reset-password')
+  @Post(':reset-password')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDTO){
     return this.userService.resetPassword(resetPasswordDto);
   }
+
 
 
   // Assuming "validate()" in UserService handles authentication/authorization

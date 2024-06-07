@@ -143,6 +143,7 @@ export class UserService {
     await this.userRepository.save(user);
     await sendEmail(user.email, code);
   }
+  
 
   async resetPassword(resetPasswordDto: ResetPasswordDTO): Promise<void> {
     const { resetCode, newPassword, email } = resetPasswordDto;
