@@ -10,15 +10,20 @@ export class AuthService {
     private readonly userService: UserService, // Agrega UserRepository como dependencia
     private readonly jwtService: JwtService,
   ) {}
-
   async signIn(email: string, password: string) {
     const user = await this.userService.validateCredentials(email, password);
-
+  
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-
-    const payload = { sub: user.id, email: user.email };
+  
+    // Obtener el rol del usuario (asumiendo que está almacenado en el objeto del usuario)
+    const role = user.isAdmin; // Asegúrate de ajustar esto según cómo esté almacenado el rol en el objeto del usuario
+  
+    // Crear el payload del token incluyendo el rol
+    const payload = { sub: user.id, email: user.email, role: role };
+  
+    // Firmar el token con el payload
     return {
       token: this.jwtService.sign(payload),
     };
@@ -29,12 +34,18 @@ export class AuthService {
   ): Promise<{ userId: number; isAdmin: boolean }> {
     try {
       const decoded = await this.jwtService.verifyAsync(data.jwt);
-      console.log(decoded.role);
-      return { userId: decoded.sub, isAdmin: decoded.role }; // retorna id y rol en caso de ser válido el token
+      console.log("decoded: ")
+      console.log(decoded);
+      
+      // Verificamos si el campo 'role' está presente y si su valor es '1'
+      const isAdmin = decoded.role;
+  
+      return { userId: decoded.sub, isAdmin: isAdmin};
     } catch (error) {
-      console.log('hubo error');
+      console.log('Hubo un error al validar el token:');
       console.log(data.jwt);
-      throw new UnauthorizedException('Invalid token'); // caso token no válido
+      throw new UnauthorizedException('Token inválido');
     }
   }
+  
 }

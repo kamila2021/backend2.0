@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
   Patch,
+  HttpCode,
 } from '@nestjs/common';
 import { User } from '../model/user.model';
 import { UserService } from '../service/user.service';
@@ -36,7 +37,18 @@ export class UserController {
     return await this.userService.findUserById(id);
   }
 
-  @Get('email/:email')
+  @Get('list')
+  @UseGuards(AuthGuard)
+  async findAllUsers(): Promise<User[]> {
+    try {
+      return await this.userService.findAllUsers();
+    } catch (error) {
+      // Manejar errores aquí si es necesario
+      throw new Error('Error al obtener todos los usuarios');
+    }
+  }
+
+  @Get('email')
   async findByEmail(@Param('email') email: string): Promise<User> {
     return await this.userService.findUserByEmail(email);
   }
@@ -64,11 +76,24 @@ export class UserController {
   ) {
     return this.userService.requestResetPassword(requestResetPasswordDto);
   }
+ 
 
   @Post(':reset-password')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDTO){
     return this.userService.resetPassword(resetPasswordDto);
   }
+  @Post('find')
+  async findUserByIdAndEmail(@Body() userData: { id: number, email: string }): Promise<User> {
+    try {
+      const user = await this.userService.findUserByIdAndEmail(userData);
+      if (!user) {
+        throw new Error('Usuario no encontrado');
+      }
+      return user;
+    } catch (error) {
+      throw new Error('Error al buscar usuario por ID y correo electrónico');
+    }
+  
 
 
 
@@ -79,4 +104,5 @@ export class UserController {
   //   const credentials = extractCredentialsFromRequest();
   //   return await this.userService.validate(credentials);
   // }
+}
 }

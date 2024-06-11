@@ -23,7 +23,7 @@ export class UserService {
     try {
       return await this.userRepository.find();
     } catch (error) {
-      return error;
+      throw new Error('Error al obtener todos los usuarios');
     }
   }
 
